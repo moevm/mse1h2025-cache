@@ -27,7 +27,7 @@ import pytest
 PyTest:
 
 ```python
-def add(a, b):
+def add(a, b) -> int:
     return a + b
 
 def test_add():
@@ -41,7 +41,7 @@ GTest:
 ```python
 import unittest
 
-def add(a, b):
+def add(a, b) -> int:
     return a + b
 
 class TestAddFunction(unittest.TestCase):
@@ -71,8 +71,8 @@ PyTest требует значительно меньше кода для дос
     ("world", 5),
     ("pytest", 6)
 ])
-def test_length(input, expected):
-    assert len(input) == expected
+def test_length(input_val: str, expected: int):
+    assert len(input_val) == expected
 ```
 
 Данная технология позволяет запускать один и тот же тест с разными наборами данных, уменьшая дублирование кода и увеличивая покрытие тестами (т.е. нет необходимости писать множество маленьких тестов или строк с assert).
@@ -83,13 +83,15 @@ def test_length(input, expected):
 
 ```python
 @pytest.fixture
-def numbers():
+def numbers() -> list:
     return [1, 2, 3]
 
-def test_length(numbers):
+
+def test_length_2(numbers: list):
     assert len(numbers) == 3
 
-def test_sum(numbers):
+
+def test_sum(numbers: list):
     assert sum(numbers) == 6
 ```
 
@@ -107,7 +109,7 @@ def test_sum(numbers):
 Тестирование исключений позволяет проверять, что код правильно обрабатывает ошибки и исключения, делая приложение более надёжным.
 
 ```python
-def divide(a, b):
+def divide(a, b) -> float:
     if b == 0:
         raise ZeroDivisionError("Нельзя делить на ноль!")
     return a / b
