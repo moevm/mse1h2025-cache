@@ -4,7 +4,7 @@
 
 Для начала, опишем возможные варианты запуска тестов.
 
-Базовые варианты запуска тестов :
+Базовые варианты запуска тестов:
 
 * Запуск одного файла: ```pytest test_mod.py```
 * Запуск всех тестов в директории: ```pytest testing/```
@@ -12,7 +12,38 @@
 
 ### Запуск одного теста
 
-Для запуска одного теста создадим файл ```try_pytest_features.py```, в котором будут находиться некоторое тесты из файла ```PyTest.md``` (работаем в папке ```Pytest_overview```).
+Для запуска одного теста создадим файл ```try_pytest_features.py```, в котором будут находиться некоторые тесты из файла ```PyTest.md``` (работаем в папке ```Pytest_overview```).
+
+
+Файл ```try_pytest_features.py```
+```python
+import pytest
+
+
+# Пример с использованием параметризации
+@pytest.mark.parametrize("input_val, expected", [
+    ("hello", 5),
+    ("world", 5),
+    ("pytest", 6)
+])
+def test_length(input_val: str, expected: int):
+    assert len(input_val) == expected
+
+
+# Пример тестов с использованием фикстур
+@pytest.fixture
+def numbers() -> list:
+    return [1, 2, 3]
+
+
+def test_length_2(numbers: list):
+    assert len(numbers) == 3
+
+
+def test_sum(numbers: list):
+    assert sum(numbers) == 6
+
+```
 
 Далее из терминала запустим команду 
 ```
@@ -61,6 +92,33 @@ try_pytest_features.py .                                                        
 ### Запуск всех тестов в дирректории
 
 Для демонстрации данного примера создадим папку ```tests_dir```, в которой создадим два файла с тестами.
+
+Файл ```tests_dir/test_n1.py```
+```python
+import pytest
+
+
+def add(a: int, b: int) -> int:
+    return a + b
+
+
+def test_1():
+    assert add(1, 1) == 2
+```
+
+Файл ```tests_dir/test_n2.py```
+```python
+import pytest
+
+
+def mult(a: int, b: int) -> int:
+    return a * b
+
+
+def test_1():
+    assert mult(2, 3) == 6
+
+```
 
 Запустим проверку тестов в каждом файле директории:
 ```
