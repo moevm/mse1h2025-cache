@@ -7,7 +7,7 @@ import pytest
     ("world", 5),
     ("pytest", 6)
 ])
-def test_length(input_val, expected):
+def test_length(input_val: str, expected: int):
     assert len(input_val) == expected
 
 

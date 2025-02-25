@@ -27,7 +27,7 @@ import pytest
 PyTest:
 
 ```python
-def add(a, b) -> int:
+def add(a: int, b: int) -> int:
     return a + b
 
 def test_add():
@@ -41,7 +41,7 @@ GTest:
 ```python
 import unittest
 
-def add(a, b) -> int:
+def add(a: int, b: int) -> int:
     return a + b
 
 class TestAddFunction(unittest.TestCase):
@@ -109,7 +109,7 @@ def test_sum(numbers: list):
 Тестирование исключений позволяет проверять, что код правильно обрабатывает ошибки и исключения, делая приложение более надёжным.
 
 ```python
-def divide(a, b) -> float:
+def divide(a: int, b: int) -> float:
     if b == 0:
         raise ZeroDivisionError("Нельзя делить на ноль!")
     return a / b
