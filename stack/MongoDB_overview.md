@@ -1,4 +1,4 @@
-## Причиниы выбора в качестве базы данных MongoDB:
+## Причины выбора в качестве базы данных MongoDB:
 
 - достаточность функционала
 - удобство в использовании
@@ -96,7 +96,7 @@ client.close()
 ```
 
 
-## Так же предложен пример реализация времени жизни для документов (данные в формате pandas.DataFrame)
+## Так же предложен пример реализации времени жизни для документов (данные в формате pandas.DataFrame)
 ```python
 import pandas as pd
 from pymongo import MongoClient, ASCENDING
@@ -140,7 +140,7 @@ print(df_from_mongo)
 
 ## Запуск базы данных (на примере docker-compose):
 
-самый базвый вариант файла docker-compose.yml:
+самый базовый вариант файла docker-compose.yml:
 ```yaml
 services:
   mongodb:
@@ -149,6 +149,8 @@ services:
     restart: always
     ports:
       - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
 
 volumes:
   mongo_data:
