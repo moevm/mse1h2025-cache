@@ -8,3 +8,8 @@
 * [Описание Testcontainers](stack/Testcontainers.md)
 * [Описание Docker](stack/Doker_compose_Overview.md)
 * [Описание Pytest-mock](stack/mock.md)
+
+## Итерация №2
+
+* [Презентация](slides/Итерация%20№2.pdf)
+* [Скринкаст работы](https://disk.yandex.ru/d/VhNRvH0elF0-Fw)
