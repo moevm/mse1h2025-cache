@@ -13,3 +13,4 @@
 
 * [Презентация](slides/Итерация%20№2.pdf)
 * [Скринкаст работы](https://disk.yandex.ru/d/VhNRvH0elF0-Fw)
+* [Скринкаст работы 2](https://disk.yandex.ru/i/roorej1t98DzwA)
