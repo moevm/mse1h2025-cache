@@ -20,3 +20,9 @@
 * [Презентация](slides/Итерация%20№3.pdf)
 * [Скринкаст работы](https://disk.yandex.ru/i/UrMjqvphLvg-sA)
 * [Инструкция](instruction.md)
+
+## Итерация 4
+
+* [Презентация](slides/Итерация%20№4.pdf)
+* [Скринкаст работы](https://disk.yandex.ru/i/p9f77rVOw1JHsQ)
+* [Инструкция](instruction.md)
