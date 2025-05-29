@@ -8,7 +8,6 @@ import time
 
 import pytest
 from testcontainers.mongodb import MongoDbContainer
-from testkit import FeaturesRepositoryStub, ReportRepositoryStub
 from typing_extensions import Self
 
 from codeplag.consts import DEFAULT_MONGO_PASS, DEFAULT_MONGO_USER
@@ -20,6 +19,7 @@ from codeplag.db.mongo import (
     ReportRepository,
 )
 from codeplag.types import ASTFeatures, FullCompareInfo
+from unit.codeplag.db.testkit import FeaturesRepositoryStub, ReportRepositoryStub
 
 
 @pytest.fixture(scope="module")
