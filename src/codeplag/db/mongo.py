@@ -61,7 +61,7 @@ class MongoDBConnection:
             self.client = MongoClient(self.url, serverSelectionTimeoutMS=3000)
             self.client.admin.command("ping")  # Checking the connection
         except ConnectionFailure as err:
-            logger.error(f"Failed to connect to MongoDB: %s", err)
+            logger.error("Failed to connect to MongoDB: %s", err)
             raise err
         logger.debug("Successfully connected to MongoDB!")
         self.db = self.client[self.DB_NAME]
