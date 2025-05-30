@@ -40,7 +40,7 @@ CPP_GITHUB_SIM_FILES = [
 
 
 def delete_letters(file: str, count: int):
-    with open(file, "ab") as f:
+    with open(file, "ab+") as f:
         f.seek(-count - 1, 2)
         f.truncate()
 
@@ -204,6 +204,7 @@ def test_saving_after_file_minor_change(extension: str, files: Tuple[str, str], 
         written = f.write("\n")
 
     result = run_check(["--files", *files], extension=extension)
+    delete_letters(files[0], written)
     logs = result.cmd_res.stdout
 
     write_cmp = (
@@ -213,12 +214,8 @@ def test_saving_after_file_minor_change(extension: str, files: Tuple[str, str], 
         in logs
     )
 
-    try:
-        assert f"Document for path {files[0]} successfully inserted/updated.".encode("utf-8") in logs
-        if found_plag:
-            assert not write_cmp
-    finally:
-        delete_letters(files[0], written)
+    assert f"Document for path {files[0]} successfully inserted/updated.".encode("utf-8") in logs
+    assert not write_cmp
 
 
 @pytest.mark.parametrize(
@@ -236,9 +233,12 @@ def test_saving_after_file_significant_change(
     run_check(["--files", *files], extension=extension)
 
     with open(files[0], "a") as f:
-        written = f.write("\nfoo = 1030" if extension == "py" else "\nint foo() { return 2; }")
+        written = f.write(
+            "\ndef foo(): return 1" if extension == "py" else "\nint foo() { return 2; }"
+        )
 
     result = run_check(["--files", *files], extension=extension)
+    delete_letters(files[0], written)
     logs = result.cmd_res.stdout
 
     write_cmp = (
@@ -248,8 +248,8 @@ def test_saving_after_file_significant_change(
         in logs
     )
 
-    try:
-        if found_plag:
-            assert write_cmp
-    finally:
-        delete_letters(files[0], written)
+    assert f"Document for path {files[0]} successfully inserted/updated.".encode("utf-8") in logs
+    if found_plag:
+        assert write_cmp
+    else:
+        assert not write_cmp
