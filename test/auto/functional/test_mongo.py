@@ -40,9 +40,8 @@ CPP_GITHUB_SIM_FILES = [
 
 
 def delete_letters(file: str, count: int):
-    with open(file, "r+") as f:
-        letters = f.read()
-        f.seek(len(letters) - count + 1)
+    with open(file, "ab") as f:
+        f.seek(-count - 1, 2)
         f.truncate()
 
 
