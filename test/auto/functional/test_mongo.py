@@ -39,10 +39,17 @@ CPP_GITHUB_SIM_FILES = [
 ]
 
 
-def delete_letters(file: str, count: int):
-    with open(file, "ab+") as f:
-        f.seek(-count - 1, 2)
-        f.truncate()
+def save_and_append_to_file(file: str, content: str) -> str:
+    with open(file, "r") as f:
+        data = f.read()
+    with open(file, "a") as f:
+        f.write(content)
+    return data
+
+
+def recover_file(file: str, old_content: str) -> None:
+    with open(file, "w") as f:
+        f.write(old_content)
 
 
 @pytest.fixture(scope="module")
@@ -200,11 +207,10 @@ def test_reading_metadata_and_reports_after_saving(
 def test_saving_after_file_minor_change(extension: str, files: Tuple[str, str], found_plag: bool):
     run_check(["--files", *files], extension=extension)
 
-    with open(files[0], "a") as f:
-        written = f.write("\n")
+    old = save_and_append_to_file(files[0], "\n")
 
     result = run_check(["--files", *files], extension=extension)
-    delete_letters(files[0], written)
+    recover_file(files[0], old)
     logs = result.cmd_res.stdout
 
     write_cmp = (
@@ -232,15 +238,12 @@ def test_saving_after_file_significant_change(
 ):
     run_check(["--files", *files], extension=extension)
 
-    with open(files[0], "a") as f:
-        written = f.write(
-            "\ndef foo(): return 1" if extension == "py" else "\nint foo() { return 2; }"
-        )
-    with open(files[0], "r") as f:
-        print(f.read())
+    old = save_and_append_to_file(
+        files[0], "\ndef foo(): return 1" if extension == "py" else "\nint foo() { return 2; }"
+    )
 
     result = run_check(["--files", *files], extension=extension)
-    delete_letters(files[0], written)
+    recover_file(files[0], old)
     logs = result.cmd_res.stdout
 
     write_cmp = (
