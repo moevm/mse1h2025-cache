@@ -204,7 +204,6 @@ def test_saving_after_file_minor_change(extension: str, files: Tuple[str, str], 
         written = f.write("\n")
 
     result = run_check(["--files", *files], extension=extension)
-    delete_letters(files[0], written)
     logs = result.cmd_res.stdout
 
     write_cmp = (
@@ -214,9 +213,12 @@ def test_saving_after_file_minor_change(extension: str, files: Tuple[str, str], 
         in logs
     )
 
-    assert f"Document for path {files[0]} successfully inserted/updated.".encode("utf-8") in logs
-    if found_plag:
-        assert not write_cmp
+    try:
+        assert f"Document for path {files[0]} successfully inserted/updated.".encode("utf-8") in logs
+        if found_plag:
+            assert not write_cmp
+    finally:
+        delete_letters(files[0], written)
 
 
 @pytest.mark.parametrize(
@@ -237,7 +239,6 @@ def test_saving_after_file_significant_change(
         written = f.write("\nfoo = 1030" if extension == "py" else "\nint foo() { return 2; }")
 
     result = run_check(["--files", *files], extension=extension)
-    delete_letters(files[0], written)
     logs = result.cmd_res.stdout
 
     write_cmp = (
@@ -247,5 +248,8 @@ def test_saving_after_file_significant_change(
         in logs
     )
 
-    if found_plag:
-        assert write_cmp
+    try:
+        if found_plag:
+            assert write_cmp
+    finally:
+        delete_letters(files[0], written)
