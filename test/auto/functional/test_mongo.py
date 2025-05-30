@@ -11,7 +11,7 @@ import pytest
 from testcontainers.mongodb import MongoDbContainer
 from utils import modify_settings, run_check
 
-from codeplag.consts import CONFIG_PATH, DEFAULT_MONGO_PASS, DEFAULT_MONGO_USER
+from codeplag.consts import CONFIG_PATH, DEFAULT_MONGO_USER
 from codeplag.db.mongo import FeaturesRepository, MongoDBConnection, ReportRepository
 from codeplag.types import ASTFeatures
 
@@ -39,20 +39,16 @@ CPP_GITHUB_SIM_FILES = [
 ]
 
 
-def del_lines(file: str, count: int):
+def delete_letters(file: str, count: int):
     with open(file, "r+") as f:
-        lines = f.readlines()
-        f.seek(0)
+        letters = f.read()
+        f.seek(len(letters) - count)
         f.truncate()
-        f.writelines(lines[: -count - 1])
-        f.writelines(lines[-count - 1][:-1])
 
 
 @pytest.fixture(scope="module")
 def mongo_container() -> MongoDbContainer:
-    with MongoDbContainer(
-        "mongo:8.0", username=DEFAULT_MONGO_USER, password=DEFAULT_MONGO_PASS
-    ) as mongo:
+    with MongoDbContainer("mongo:8.0", username=DEFAULT_MONGO_USER) as mongo:
         mongo.start()
         time.sleep(7)
         yield mongo
@@ -206,9 +202,10 @@ def test_saving_after_file_minor_change(extension: str, files: Tuple[str, str], 
     run_check(["--files", *files], extension=extension)
 
     with open(files[0], "a") as f:
-        f.write("\n")
+        written = f.write("\n")
 
     result = run_check(["--files", *files], extension=extension)
+    delete_letters(files[0], written)
     logs = result.cmd_res.stdout
 
     write_cmp = (
@@ -218,14 +215,9 @@ def test_saving_after_file_minor_change(extension: str, files: Tuple[str, str], 
         in logs
     )
 
-    try:
-        assert (
-            f"Document for path {files[0]} successfully inserted/updated.".encode("utf-8") in logs
-        )
-        if found_plag:
-            assert not write_cmp
-    finally:
-        del_lines(files[0], 0)
+    assert f"Document for path {files[0]} successfully inserted/updated.".encode("utf-8") in logs
+    if found_plag:
+        assert not write_cmp
 
 
 @pytest.mark.parametrize(
@@ -243,9 +235,10 @@ def test_saving_after_file_significant_change(
     run_check(["--files", *files], extension=extension)
 
     with open(files[0], "a") as f:
-        f.write("\nfoo += 1030" if extension == "py" else "\nint foo() { return 2; }")
+        written = f.write("\nfoo += 1030" if extension == "py" else "\nint foo() { return 2; }")
 
     result = run_check(["--files", *files], extension=extension)
+    delete_letters(files[0], written)
     logs = result.cmd_res.stdout
 
     write_cmp = (
@@ -255,8 +248,5 @@ def test_saving_after_file_significant_change(
         in logs
     )
 
-    try:
-        if found_plag:
-            assert write_cmp
-    finally:
-        del_lines(files[0], 1)
+    if found_plag:
+        assert write_cmp
