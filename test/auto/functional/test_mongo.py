@@ -236,6 +236,8 @@ def test_saving_after_file_significant_change(
         written = f.write(
             "\ndef foo(): return 1" if extension == "py" else "\nint foo() { return 2; }"
         )
+    with open(files[0], "r") as f:
+        print(f.read())
 
     result = run_check(["--files", *files], extension=extension)
     delete_letters(files[0], written)
